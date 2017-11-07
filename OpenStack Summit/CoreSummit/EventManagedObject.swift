@@ -264,8 +264,8 @@ public extension EventManagedObject {
     static func presentations(for speaker: Identifier, start: Date, end: Date, summit: Identifier, context: NSManagedObjectContext) throws -> [EventManagedObject] {
         
         //let predicate = NSPredicate(format: "(ANY presentation.speakers == %@ OR presentation.moderator == %@) AND (end >= %@ AND end <= %@) AND summit == %@", speaker, speaker, startDate, endDate, summit)
-        let predicate: Predicate = ((#keyPath(EventManagedObject.presentation.speakers.id)).any(in: [speaker])
-            || #keyPath(EventManagedObject.presentation.moderator.id) == speaker)
+        
+        let predicate: Predicate = ((#keyPath(EventManagedObject.presentation.speakers.id)).any(in: [speaker]) || #keyPath(EventManagedObject.presentation.moderator.id) == speaker)
             && #keyPath(EventManagedObject.end) >= start
             && #keyPath(EventManagedObject.end) <= end
             && #keyPath(EventManagedObject.summit.id) == summit
