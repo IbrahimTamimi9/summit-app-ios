@@ -274,7 +274,7 @@ internal extension NSManagedObjectContext {
     
     /// Returns managed object for fault value type.
     @inline(__always)
-    func relationshipFault<Encodable: Unique>(_ fault: Fault<Encodable>) throws -> Encodable.ManagedObject
+    func relationshipFault<Encodable>(_ fault: Fault<Encodable>) throws -> Encodable.ManagedObject
         where Encodable: CoreDataEncodable, Encodable.ManagedObject: Entity {
         
         switch fault {

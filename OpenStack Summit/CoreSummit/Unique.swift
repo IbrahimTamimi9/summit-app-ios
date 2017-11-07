@@ -7,7 +7,7 @@
 //
 
 /// A data type that can be uniquely identified.
-public protocol Unique: Equatable, Hashable, Comparable {
+public protocol Unique: Hashable, Comparable {
     
     var identifier: Identifier { get }
 }

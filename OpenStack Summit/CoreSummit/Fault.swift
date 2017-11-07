@@ -31,7 +31,7 @@ public extension Fault {
 
 // MARK: - Equatable
 
-public func == <T: Unique> (lhs: Fault<T>, rhs: Fault<T>) -> Bool {
+public func == <T> (lhs: Fault<T>, rhs: Fault<T>) -> Bool {
     
     switch (lhs, rhs) {
     case let (.identifier(lhsValue), .identifier(rhsValue)): return lhsValue == rhsValue
