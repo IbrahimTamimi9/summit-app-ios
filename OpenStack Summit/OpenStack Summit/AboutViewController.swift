@@ -472,7 +472,7 @@ extension Date {
         formatter.timeZone = TimeZone(identifier: "UTC")
         formatter.amSymbol = "AM"
         formatter.pmSymbol = "PM"
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss tz"
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
         return formatter.string(from: self)
     }
