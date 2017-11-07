@@ -48,6 +48,11 @@ public extension Store {
             guard error == nil
                 else { completion(error!) ; return }
             
+            self.session.accessToken = self.oauthModuleOpenID.oauth2Session.accessToken
+            self.session.accessTokenExpirationDate = self.oauthModuleOpenID.oauth2Session.accessTokenExpirationDate
+            self.session.refreshToken = self.oauthModuleOpenID.oauth2Session.refreshToken
+            self.session.refreshTokenExpirationDate = self.oauthModuleOpenID.oauth2Session.refreshTokenExpirationDate
+            
             loginCallback()
             
             self.currentMember(for: summit) { (response) in

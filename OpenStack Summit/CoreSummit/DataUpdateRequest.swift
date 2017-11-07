@@ -60,6 +60,12 @@ private extension Store {
         
         let http = self.isLoggedIn ? self.createHTTP(.openIDJSON) : self.createHTTP(.serviceAccount)
         
+        if self.isLoggedIn {
+            
+            self.session.accessToken = oauthModuleOpenID.oauth2Session.accessToken
+            self.session.refreshToken = oauthModuleOpenID.oauth2Session.refreshToken
+        }
+        
         http.request(method: .get, path: url) { (responseObject, error) in
             
             // forward error

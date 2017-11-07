@@ -119,6 +119,12 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         
         sections = []
         
+        if Store.shared.session.accessToken != nil || Store.shared.session.refreshToken != nil ||
+            Store.shared.session.accessTokenExpirationDate != nil || Store.shared.session.refreshTokenExpirationDate != nil {
+            
+            sections.append(.oauth)
+        }
+        
         if let summitManagedObject = self.currentSummit {
             
             let summit = Summit(managedObject: summitManagedObject)
@@ -177,6 +183,55 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         cell.passwordLabel.text = network.password
     }
     
+    
+    @inline(__always)
+    private func configure(cell: OAuthDebugCell) {
+        
+        if let accessToken = Store.shared.session.accessToken {
+            
+            cell.accessTokenTitleLabel.text = "Access token:"
+            cell.accessTokenLabel.text = accessToken
+            
+        } else {
+            
+            cell.accessTokenTitleLabel.text = ""
+            cell.accessTokenLabel.text = ""
+        }
+        
+        if let accessTokenExpirationDate = Store.shared.session.accessTokenExpirationDate {
+            
+            cell.accessTokenExpirationDateTitleLabel.text = "Access token expiration date (UTC, calculated on login):"
+            cell.accessTokenExpirationDateLabel.text = accessTokenExpirationDate.currentUTCTimeZoneDate
+            
+        } else {
+            
+            cell.accessTokenExpirationDateTitleLabel.text = ""
+            cell.accessTokenExpirationDateLabel.text = ""
+        }
+        
+        if let refreshToken = Store.shared.session.refreshToken {
+            
+            cell.refreshTokenTitleLabel.text = "Refresh token:"
+            cell.refreshTokenLabel.text = refreshToken
+            
+        } else {
+            
+            cell.refreshTokenTitleLabel.text = ""
+            cell.refreshTokenLabel.text = ""
+        }
+        
+        if let refreshTokenExpirationDate = Store.shared.session.refreshTokenExpirationDate {
+            
+            cell.refreshTokenExpirationDateTitleLabel.text = "Refresh token expiration date (UTC, calculated on login):"
+            cell.refreshTokenExpirationDateLabel.text = refreshTokenExpirationDate.currentUTCTimeZoneDate
+            
+        } else {
+            
+            cell.refreshTokenExpirationDateTitleLabel.text = ""
+            cell.refreshTokenExpirationDateLabel.text = ""
+        }
+    }
+    
     @inline(__always)
     private func configure(cell: AboutNameCell) {
         
@@ -232,11 +287,12 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         
         switch section {
             
-        case .name: return 1
+        case .name, .oauth: return 1
             
         case let .wirelessNetworks(networks): return networks.count
             
         case let .about(cells): return cells.count
+        
         }
     }
     
@@ -278,6 +334,14 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
                 
                 return tableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.aboutDescriptionCell, for: indexPath)!
             }
+            
+        case .oauth:
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: R.reuseIdentifier.oAuthDebugCell, for: indexPath)!
+            
+            configure(cell: cell)
+            
+            return cell
         }
     }
     
@@ -289,7 +353,7 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         
         switch section {
         case .wirelessNetworks: return 90
-        case .name, .about: return 0
+        case .name, .about, .oauth: return 0
         }
     }
     
@@ -299,7 +363,7 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         
         switch section {
         case .wirelessNetworks: return wirelessNetworksHeaderView
-        case .name, .about: return nil
+        case .name, .about, .oauth: return nil
         }
     }
     
@@ -309,7 +373,7 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         
         switch section {
         case .wirelessNetworks: return 30
-        case .name, .about: return 0
+        case .name, .about, .oauth: return 0
         }
     }
     
@@ -319,7 +383,7 @@ final class AboutViewController: UITableViewController, RevealViewController, Em
         
         switch section {
         case .wirelessNetworks: return wirelessNetworksFooterView
-        case .name, .about: return nil
+        case .name, .about, .oauth: return nil
         }
     }
     
@@ -344,6 +408,7 @@ private extension AboutViewController {
     enum Section {
         
         case name
+        case oauth
         case wirelessNetworks([WirelessNetwork])
         case about([AboutCell])
     }
@@ -379,4 +444,36 @@ final class AboutNameCell: UITableViewCell {
     @IBOutlet private(set) weak var buildVersionLabel: CopyableLabel!
     
     @IBOutlet private(set) weak var buildNumberLabel: CopyableLabel!
+}
+
+final class OAuthDebugCell: UITableViewCell {
+    
+    @IBOutlet private(set) weak var accessTokenTitleLabel: UILabel!
+    
+    @IBOutlet private(set) weak var accessTokenLabel: CopyableLabel!
+    
+    @IBOutlet private(set) weak var refreshTokenTitleLabel: UILabel!
+    
+    @IBOutlet private(set) weak var refreshTokenLabel: CopyableLabel!
+    
+    @IBOutlet private(set) weak var accessTokenExpirationDateTitleLabel: UILabel!
+    
+    @IBOutlet private(set) weak var accessTokenExpirationDateLabel: CopyableLabel!
+    
+    @IBOutlet private(set) weak var refreshTokenExpirationDateTitleLabel: UILabel!
+    
+    @IBOutlet private(set) weak var refreshTokenExpirationDateLabel: CopyableLabel!
+}
+
+extension Date {
+    
+    var currentUTCTimeZoneDate: String {
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.amSymbol = "AM"
+        formatter.pmSymbol = "PM"
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss tz"
+        
+        return formatter.string(from: self)
+    }
 }

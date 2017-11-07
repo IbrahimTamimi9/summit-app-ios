@@ -34,6 +34,13 @@ public extension Store {
         
         let context = privateQueueManagedObjectContext
         
+        
+        if self.isLoggedIn {
+            
+            self.session.accessToken = oauthModuleOpenID.oauth2Session.accessToken
+            self.session.refreshToken = oauthModuleOpenID.oauth2Session.refreshToken
+        }
+        
         http.request(method: .post, path: url) { (responseObject, error) in
             
             // forward error

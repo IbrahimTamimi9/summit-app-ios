@@ -74,4 +74,24 @@ extension UIViewController {
         
         return self.currentSummit != nil
     }
+    
+    var accessToken: String? {
+        
+        return Store.shared.session.accessToken
+    }
+    
+    var refreshToken: String? {
+        
+        return Store.shared.session.refreshToken
+    }
+    
+    var accessTokenExpirationDate: Date? {
+        
+        return Store.shared.session.accessTokenExpirationDate
+    }
+    
+    var refreshTokenExpirationDate: Date? {
+        
+        return Store.shared.session.refreshTokenExpirationDate
+    }
 }
